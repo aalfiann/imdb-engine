@@ -13,20 +13,8 @@ The technique used is called “web scraping.” Which means, if IMDb changes an
 ## Installation
 
 Install this package via [Composer](https://getcomposer.org/).
-
-1. For the first time project, you have to create the `composer.json` file, (skip to point 2, if you already have `composer.json`)  
-```
-composer init
-```
-
-2. Install
 ```
 composer require "aalfiann/imdb-engine:^1.0"
-```
-
-3. Done, for update in the future you can just run
-```
-composer update
 ```
 
 ## Get Movies by ID
