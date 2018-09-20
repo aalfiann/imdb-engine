@@ -30,6 +30,7 @@ echo var_dump($imdb->find()->getMovie());
 
 Make output into JSON
 ```php
+header('Content-Type: application/json');
 echo $imdb->find()->getMovieJson(JSON_PRETTY_PRINT);
 ```
 
@@ -50,6 +51,7 @@ echo var_dump($imdb->search()->getList());
 
 Make output into JSON
 ```php
+header('Content-Type: application/json');
 echo $imdb->search()->getListJson(JSON_PRETTY_PRINT);
 ```
 
@@ -68,6 +70,7 @@ echo var_dump($imdb->searchArtist()->getArtistList());
 
 Make output into JSON
 ```php
+header('Content-Type: application/json');
 echo $imdb->searchArtist()->getArtistListJson(JSON_PRETTY_PRINT);
 ```
 
