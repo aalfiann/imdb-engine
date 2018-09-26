@@ -25,7 +25,7 @@ use Symfony\Component\DomCrawler\Crawler;
                 case 'movie':
                     return $this->url_movie.rawurlencode($this->query);
                 default:
-                    return $this->url_search.'&title='.rawurlencode($this->query).'&genres='.$this->genres.'&role='.$this->userid.'&page'.$this->page.'&count='.$this->itemsperpage;
+                    return $this->url_search.'&title='.rawurlencode($this->query).'&genres='.$this->genres.'&role='.$this->userid.'&page='.$this->page.'&count='.$this->itemsperpage;
             }
         }
 
