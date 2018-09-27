@@ -87,6 +87,32 @@ use Symfony\Component\DomCrawler\Crawler;
                     }
                 }
                 $totalpages = (int)ceil($total_item/$this->itemsperpage);
+                //restricted search page, because imdb only allow search for 10K records only
+                switch ($this->itemsperpage) {
+                    case 50:
+                        if ($totalpages > 200) {
+                            $maxpages = 200;
+                        } else {
+                            $maxpages = $totalpages;
+                        }
+                        break;
+                    case 100:
+                        if ($totalpages > 100) {
+                            $maxpages = 100;
+                        } else {
+                            $maxpages = $totalpages;
+                        }
+                        break;
+                    case 250:
+                        if ($totalpages > 40) {
+                            $maxpages = 40;
+                        } else {
+                            $maxpages = $totalpages;
+                        }
+                        break;
+                    default:
+                    $maxpages = $totalpages;
+                }
                 $first = (int)($nav->filter('span.lister-current-first-item')->count()?str_replace(',','',$nav->filter('span.lister-current-first-item')->text()):'1');
                 $last = (int)($nav->filter('span.lister-current-first-item')->count()?str_replace(',','',$nav->filter('span.lister-current-last-item')->text()):$total_item);
                 $crawler2 = [
@@ -96,7 +122,7 @@ use Symfony\Component\DomCrawler\Crawler;
                     'number_item_last' => $last,
                     'items_per_page' => (int)$this->itemsperpage,
                     'page_now' => (int)$this->page,
-                    'page_total' => $totalpages
+                    'page_total' => $maxpages
                 ];    
                 if(!empty($crawler1)){
                     return [

@@ -1,6 +1,6 @@
 # IMDB Engine
 
-[![Version](https://img.shields.io/badge/latest-1.0.3-green.svg)](https://github.com/aalfiann/imdb-engine)
+[![Version](https://img.shields.io/badge/latest-1.0.4-green.svg)](https://github.com/aalfiann/imdb-engine)
 [![Total Downloads](https://poser.pugx.org/aalfiann/imdb-engine/downloads)](https://packagist.org/packages/aalfiann/imdb-engine)
 [![License](https://poser.pugx.org/aalfiann/imdb-engine/license)](https://github.com/aalfiann/imdb-engine/blob/HEAD/LICENSE.md)
 
