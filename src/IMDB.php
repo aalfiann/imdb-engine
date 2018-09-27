@@ -25,6 +25,7 @@ use Symfony\Component\DomCrawler\Crawler;
                 case 'movie':
                     return $this->url_movie.rawurlencode($this->query);
                 default:
+                    if ($this->itemsperpage != 50 && $this->itemsperpage != 100 && $this->itemsperpage != 250 ) $this->itemsperpage = 50;
                     return $this->url_search.'&title='.rawurlencode($this->query).'&genres='.$this->genres.'&role='.$this->userid.'&page='.$this->page.'&count='.$this->itemsperpage;
             }
         }
@@ -93,6 +94,7 @@ use Symfony\Component\DomCrawler\Crawler;
                     'records_count' => ($last-($first-1)),
                     'number_item_first' => $first,
                     'number_item_last' => $last,
+                    'items_per_page' => (int)$this->itemsperpage,
                     'page_now' => (int)$this->page,
                     'page_total' => $totalpages
                 ];    
