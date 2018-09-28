@@ -21,6 +21,7 @@ use Symfony\Component\DomCrawler\Crawler;
         public function urlBuilder($type){
             switch($type){
                 case 'artist':
+                    if ($this->itemsperpage != 50 && $this->itemsperpage != 100 && $this->itemsperpage != 250 ) $this->itemsperpage = 50;
                     return $this->url_artist.rawurlencode($this->query).'&start='.$this->start.'&count='.$this->itemsperpage;
                 case 'movie':
                     return $this->url_movie.rawurlencode($this->query);
@@ -196,6 +197,8 @@ use Symfony\Component\DomCrawler\Crawler;
                     'page_total' => $totalpages,
                     'number_item_first' => $first,
                     'number_item_last' => $last,
+                    'items_per_page' => (int)$this->itemsperpage,
+                    'prev_start' => (($first-$this->itemsperpage)>=1?($first-$this->itemsperpage):0),
                     'next_start' => ((($last+1)<$total_item)?($last+1):0)
                 ];    
                 if(!empty($crawler1)){
