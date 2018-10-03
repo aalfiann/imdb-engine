@@ -1,6 +1,6 @@
 # IMDB Engine
 
-[![Version](https://img.shields.io/badge/latest-1.0.5-green.svg)](https://github.com/aalfiann/imdb-engine)
+[![Version](https://img.shields.io/badge/latest-1.0.6-green.svg)](https://github.com/aalfiann/imdb-engine)
 [![Total Downloads](https://poser.pugx.org/aalfiann/imdb-engine/downloads)](https://packagist.org/packages/aalfiann/imdb-engine)
 [![License](https://poser.pugx.org/aalfiann/imdb-engine/license)](https://github.com/aalfiann/imdb-engine/blob/HEAD/LICENSE.md)
 
@@ -24,7 +24,8 @@ require_once ('vendor/autoload.php');
 use \aalfiann\IMDB;
 
 $imdb = new IMDB();
-$imdb->query    = 'tt3829266';      // Movie title {required}
+$imdb->query    = 'tt3829266';      // ID IMDB Movie {required}
+$imdb->trailer  = false;            // This will make faster because there is no second request to get video trailer. Default value is true.
 echo var_dump($imdb->find()->getMovie());
 ```
 

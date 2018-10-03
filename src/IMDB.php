@@ -10,8 +10,8 @@ use Symfony\Component\DomCrawler\Crawler;
      * @license    https://github.com/aalfiann/imdb-engine/blob/master/LICENSE.md  MIT License
      */
     class IMDB extends IMDBHelper {
-        var $proxy,$proxyauth,$htmlData;
-        var $query='',$genres='',$userid='',$page=1,$start=1,$itemsperpage=50;
+        var $proxy,$proxyauth,$htmlData,$videoid;
+        var $query='',$genres='',$userid='',$page=1,$start=1,$itemsperpage=50,$trailer=true;
         var $nopicturemovie = 'https://m.media-amazon.com/images/G/01/imdb/images/nopicture/medium/film-3385785534._CB470041827_.png';
 
         protected $url_search = 'https://www.imdb.com/search/title?title_type=feature&adult=include&view=advanced';
@@ -598,20 +598,30 @@ use Symfony\Component\DomCrawler\Crawler;
 
         public function getMovieTrailer() {
             if(!empty($this->htmlData)) {
-                $YoutTubeSearchQuery = urlencode($this->getProperty('og:title')." trailer");
-                $YoutTubeSearchQuery = preg_replace('/[^A-Za-z0-9]\+/', '', $YoutTubeSearchQuery);
-                $YouTubeURL = "https://www.youtube.com/results?search_query=" . $YoutTubeSearchQuery;
-                $YouTubeHTML = $this->sendRequest($YouTubeURL,true);
-                preg_match('~href="/watch\?v=(.*)"~Uis',$YouTubeHTML,$match);
-                if (!empty($match[1])) return $match[1];
+                if ($this->trailer){
+                    if (empty($this->videoid)){
+                        $YoutTubeSearchQuery = urlencode($this->getProperty('og:title')." trailer");
+                        $YoutTubeSearchQuery = preg_replace('/[^A-Za-z0-9]\+/', '', $YoutTubeSearchQuery);
+                        $YouTubeURL = "https://www.youtube.com/results?search_query=" . $YoutTubeSearchQuery;
+                        $YouTubeHTML = $this->sendRequest($YouTubeURL,true);
+                        preg_match('~href="/watch\?v=(.*)"~Uis',$YouTubeHTML,$match);
+                        if (!empty($match[1])) {
+                            $this->videoid = $match[1];
+                            return $this->videoid;
+                        }
+                    } else {
+                        return $this->videoid;
+                    }
+                }
             }
+            $this->videoid = "";
             return "";
         }
     
         public function getMovieTrailerFull() {
             $id = $this->getMovieTrailer();
             if (!empty($id)){
-                return 'https://www.youtube.com/watch?v='.$this->getMovieTrailer();
+                return 'https://www.youtube.com/watch?v='.$id;
             }
             return "";
         }
@@ -619,7 +629,7 @@ use Symfony\Component\DomCrawler\Crawler;
         public function getMovieTrailerEmbed() {
             $id = $this->getMovieTrailer();
             if (!empty($id)){
-                return '<iframe width="560" height="315" src="https://www.youtube.com/embed/'.$this->getMovieTrailer().'?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+                return '<iframe width="560" height="315" src="https://www.youtube.com/embed/'.$id.'?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
             }
             return "";
         }
