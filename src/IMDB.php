@@ -463,8 +463,10 @@ use Symfony\Component\DomCrawler\Crawler;
                         return $result;
                     } else {
                         $data = explode('inf"'."\n".'> ', $tmp2[0]);
-                        $data2 = explode("</a>",$data[1]);
-                        return $data2[0];
+                        if (!empty($data[1])){
+                            $data2 = explode("</a>",$data[1]);
+                            return $data2[0];
+                        }
                     }
                 }
             }
