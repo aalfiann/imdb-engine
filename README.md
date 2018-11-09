@@ -1,6 +1,6 @@
 # IMDB Engine
 
-[![Version](https://img.shields.io/badge/latest-1.0.8-green.svg)](https://github.com/aalfiann/imdb-engine)
+[![Version](https://img.shields.io/badge/latest-1.1.0-green.svg)](https://github.com/aalfiann/imdb-engine)
 [![Total Downloads](https://poser.pugx.org/aalfiann/imdb-engine/downloads)](https://packagist.org/packages/aalfiann/imdb-engine)
 [![License](https://poser.pugx.org/aalfiann/imdb-engine/license)](https://github.com/aalfiann/imdb-engine/blob/HEAD/LICENSE.md)
 
@@ -45,7 +45,7 @@ $imdb = new IMDB();
 $imdb->query    = 'The Predator';   // Movie title {not required}. If blank then will show the new popular movies. The title must be don't include year or only conjunctions.
 $imdb->genres   = '';               // You can filter by input multiple genres with commas separated
 $imdb->userid   = '';               // You can filter by input user id. Ex. Jackie Chan user id is >> nm0000329
-$imdb->page     = 1;                // Page number for navigation in many results.
+$imdb->start    = 1;                // Start number for navigation in many results.
 $imdb->itemsperpage = 50;           // You can change this with 50, 100 and 250. Default is 50.
 echo var_dump($imdb->search()->getList());
 ```
@@ -64,7 +64,7 @@ use \aalfiann\IMDB;
 
 $imdb = new IMDB();
 $imdb->query = 'Audrey Hepburn';    // Artist name {required}
-$imdb->start = 1;                   // Start number for navigation in many results. 
+$imdb->start = 1;                   // Start number for navigation in many results.
 $imdb->itemsperpage = 50;           // You can change this with 50, 100 and 250. Default is 50.
 echo var_dump($imdb->searchArtist()->getArtistList());
 ```

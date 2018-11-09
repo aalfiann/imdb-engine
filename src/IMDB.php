@@ -27,7 +27,7 @@ use Symfony\Component\DomCrawler\Crawler;
                     return $this->url_movie.rawurlencode($this->query);
                 default:
                     if ($this->itemsperpage != 50 && $this->itemsperpage != 100 && $this->itemsperpage != 250 ) $this->itemsperpage = 50;
-                    return $this->url_search.'&title='.rawurlencode($this->query).'&genres='.$this->genres.'&role='.$this->userid.'&page='.$this->page.'&count='.$this->itemsperpage;
+                    return $this->url_search.'&title='.rawurlencode($this->query).'&genres='.$this->genres.'&role='.$this->userid.'&start='.$this->start.'&count='.$this->itemsperpage;
             }
         }
 
@@ -75,19 +75,23 @@ use Symfony\Component\DomCrawler\Crawler;
                         ]
                     ];
                 });
-                $navigation = $crawler->filter('.lister.list.detail.sub-list');
+                $navigation = $crawler->filter('.article');
                 $nav = $navigation->filter('.desc');
                 $items = explode('title',($nav->count()?$nav->text():''));
                 $total_item = 0;
+                $first = $this->start;
                 if(!empty($items[0])){
                     $items2 = explode('of',$items[0]);
                     if(!empty($items2[1])){
                         $total_item = (int)trim(str_replace(',','',$items2[1]));
+                        $tmp = explode('-',$items2[0]);
+                        $first = (int)trim(str_replace(',','',$tmp[0]));
                     } else {
                         $total_item = (int)trim(str_replace(',','',$items[0]));
                     }
                 }
                 $totalpages = (int)ceil($total_item/$this->itemsperpage);
+                $last = (($first+$crawler->filter('.lister-item.mode-advanced')->count())-1);
                 //restricted search page, because imdb only allow search for 10K records only
                 switch ($this->itemsperpage) {
                     case 50:
@@ -114,17 +118,16 @@ use Symfony\Component\DomCrawler\Crawler;
                     default:
                     $maxpages = $totalpages;
                 }
-                $first = (int)($nav->filter('span.lister-current-first-item')->count()?str_replace(',','',$nav->filter('span.lister-current-first-item')->text()):'1');
-                $last = (int)($nav->filter('span.lister-current-first-item')->count()?str_replace(',','',$nav->filter('span.lister-current-last-item')->text()):$total_item);
                 $crawler2 = [
                     'records_total' => $total_item,
                     'records_count' => ($last-($first-1)),
+                    'page_total' => $maxpages,
                     'number_item_first' => $first,
                     'number_item_last' => $last,
                     'items_per_page' => (int)$this->itemsperpage,
-                    'page_now' => (int)$this->page,
-                    'page_total' => $maxpages
-                ];    
+                    'prev_start' => (($first-$this->itemsperpage)>=1?($first-$this->itemsperpage):0),
+                    'next_start' => ((($last+1)<(($total_item>10000)?10000:$total_item))?($last+1):0)
+                ];
                 if(!empty($crawler1)){
                     return [
                         'result' => $crawler1,
@@ -184,23 +187,49 @@ use Symfony\Component\DomCrawler\Crawler;
                     if(!empty($items2[1])){
                         $total_item = (int)trim(str_replace(',','',$items2[1]));
                         $tmp = explode('-',$items2[0]);
-                        $first = (int)$this->cleanString($tmp[0]);
+                        $first = (int)trim(str_replace(',','',$tmp[0]));
                     } else {
                         $total_item = (int)trim(str_replace(',','',$items[0]));
                     }
                 }
                 $totalpages = (int)ceil($total_item/$this->itemsperpage);
                 $last = (($first+$crawler->filter('.lister-item.mode-detail')->count())-1);
+                //restricted search page, because imdb only allow search for 10K records only
+                switch ($this->itemsperpage) {
+                    case 50:
+                        if ($totalpages > 20) {
+                            $maxpages = 20;
+                        } else {
+                            $maxpages = $totalpages;
+                        }
+                        break;
+                    case 100:
+                        if ($totalpages > 10) {
+                            $maxpages = 10;
+                        } else {
+                            $maxpages = $totalpages;
+                        }
+                        break;
+                    case 250:
+                        if ($totalpages > 4) {
+                            $maxpages = 4;
+                        } else {
+                            $maxpages = $totalpages;
+                        }
+                        break;
+                    default:
+                    $maxpages = $totalpages;
+                }
                 $crawler2 = [
                     'records_total' => $total_item,
                     'records_count' => ($last-($first-1)),
-                    'page_total' => $totalpages,
+                    'page_total' => $maxpages,
                     'number_item_first' => $first,
                     'number_item_last' => $last,
                     'items_per_page' => (int)$this->itemsperpage,
                     'prev_start' => (($first-$this->itemsperpage)>=1?($first-$this->itemsperpage):0),
-                    'next_start' => ((($last+1)<$total_item)?($last+1):0)
-                ];    
+                    'next_start' => ((($last+1)<(($total_item>1000)?1000:$total_item))?($last+1):0)
+                ];
                 if(!empty($crawler1)){
                     return [
                         'result' => $crawler1,
